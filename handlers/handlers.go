@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"net/http"
 	"tgbotapi/apiclients"
 	"tgbotapi/tgbot"
 )
@@ -18,9 +19,9 @@ func (ah *AppBotHandler) Handler(c tgbot.HandlerContext) error {
 	return ah.HandlerFunc(ah.AppContext, c)
 }
 
-func SetupApp(bot *tgbot.Bot) {
+func SetupApp(bot *tgbot.Bot, httpClient *http.Client) {
 	context := AppContext{
-		quotesApiClient: apiclients.NewQuotesAPIClient(),
+		quotesApiClient: apiclients.NewQuotesAPIClient(httpClient),
 	}
 	bot.OnText("/random_quote", (&AppBotHandler{&context, RandomQuote}).Handler)
 	bot.OnText("/say_hello", SayHello)

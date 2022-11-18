@@ -18,6 +18,7 @@ type Bot struct {
 	Poller Poller
 	StopClient chan struct{}
 	Stop chan chan struct{}
+	HttpClient *http.Client
 }
 
 type UpdatesResponse struct {
@@ -82,7 +83,7 @@ func (bot *Bot) GetUpdates(offset UpdateId) ([]Update, error) {
 func (bot *Bot) MakeRequest(command string, values map[string]string) ([]byte, error) {
 	request := fmt.Sprintf("%s%s/%s", bot.ApiUrl, bot.Token, command)
 	jsonData, _ := json.Marshal(values)
-	resp, err := http.Post(request, "application/json", bytes.NewReader(jsonData))
+	resp, err := bot.HttpClient.Post(request, "application/json", bytes.NewReader(jsonData))
 	if err != nil {
 		log.Fatal(err)
 		return nil, err

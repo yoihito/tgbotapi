@@ -17,9 +17,9 @@ type QuotesAPIClient struct {
 	HttpClient *http.Client
 }
 
-func NewQuotesAPIClient() *QuotesAPIClient {
+func NewQuotesAPIClient(httpClient *http.Client) *QuotesAPIClient {
 	return &QuotesAPIClient{
-		HttpClient: &http.Client{},
+		HttpClient: httpClient,
 	}
 }
 
@@ -30,6 +30,9 @@ func (c *QuotesAPIClient) GetQuotes() (QuoteList, error) {
 	}
 	defer resp.Body.Close()
 	rawBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return QuoteList{}, err
+	}
 	var quotes QuoteList
 	if err := json.Unmarshal(rawBody, &quotes); err != nil {
 		return QuoteList{}, err
