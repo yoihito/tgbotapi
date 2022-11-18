@@ -88,6 +88,8 @@ func (bot *Bot) MakeRequest(command string, values map[string]string) ([]byte, e
 		return nil, err
   }
 
+	defer resp.Body.Close()
+
 	if resp.StatusCode != 200 {
 		b, err := io.ReadAll(resp.Body)
 		if err != nil {

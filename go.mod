@@ -1,3 +1,3 @@
-module github.com/yoihito/tgbotapi
+module tgbotapi
 
 go 1.19

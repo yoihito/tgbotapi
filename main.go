@@ -2,8 +2,8 @@ package main
 
 import (
 	"os"
-
-	tgbot "github.com/yoihito/tgbotapi/tgbot"
+	"tgbotapi/handlers"
+	"tgbotapi/tgbot"
 )
 
 func main() {
@@ -13,9 +13,6 @@ func main() {
 		Poller: tgbot.NewPoller(),
 	}
 	bot, _ := tgbot.NewBot(botSettings)
-	bot.OnText("/say_hello", func(c tgbot.HandlerContext) error {
-		c.Send("Hello!")
-		return nil
-	})
+	handlers.SetupApp(bot)
 	bot.Start()
 }
