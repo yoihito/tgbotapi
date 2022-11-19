@@ -24,7 +24,7 @@ func NewQuotesAPIClient(httpClient *http.Client) *QuotesAPIClient {
 }
 
 func (c *QuotesAPIClient) GetQuotes() (QuoteList, error) {
-	resp, err := http.Get("https://type.fit/api/quotes")
+	resp, err := c.HttpClient.Get("https://type.fit/api/quotes")
 	if err != nil {
 		return QuoteList{}, err
 	}

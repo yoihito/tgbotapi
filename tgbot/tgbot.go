@@ -35,6 +35,7 @@ func NewBot(pref Settings) (*Bot, error) {
 		ApiUrl: pref.ApiUrl,
 		Poller: pref.Poller,
 		Handlers: make(map[string]HandlerFunc),
+		HttpClient: pref.HttpClient,
 	}
 	return bot, nil
 }
@@ -81,9 +82,15 @@ func (bot *Bot) GetUpdates(offset UpdateId) ([]Update, error) {
 }
 
 func (bot *Bot) MakeRequest(command string, values map[string]string) ([]byte, error) {
-	request := fmt.Sprintf("%s%s/%s", bot.ApiUrl, bot.Token, command)
+	url := fmt.Sprintf("%s%s/%s", bot.ApiUrl, bot.Token, command)
 	jsonData, _ := json.Marshal(values)
-	resp, err := bot.HttpClient.Post(request, "application/json", bytes.NewReader(jsonData))
+	newRequest, err := http.NewRequest("POST", url, bytes.NewReader(jsonData))
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	newRequest.Header.Add("Content-Type", "application/json")
+	resp, err := bot.HttpClient.Do(newRequest)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
